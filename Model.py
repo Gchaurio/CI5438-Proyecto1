@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
 from sklearn.model_selection import train_test_split
-from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
+from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, mean_absolute_error
 
 class Model(object):
     
@@ -14,6 +14,9 @@ class Model(object):
         self.allw = []
         self.test_y = None
         self.test_x = None
+        self.real_values = None
+        self.to_evaluate = None
+        self.results = None
 
     def get_training_test(self, data: pd.DataFrame):
 
@@ -69,25 +72,56 @@ class Model(object):
         real_values = data[self.dep]
 
         to_evaluate = data[self.ind]
-        
+
         to_evaluate["t_ind"] = 1.0
 
         result = self.predict(to_evaluate)
 
-        # Calculate the accuracy
-        accuracy = accuracy_score(real_values, result)
+        self.real_values = real_values
+
+        self.to_evaluate = to_evaluate
+
+        self.results = result
+
+        # Calculate the MAE
+        mae = mean_absolute_error(real_values, result)
+
+        # Calculate the normalized MAE
+        normalized_mae = mae / np.mean(real_values)
+
+        # Calculate the R-squared
+        try:
+            r2_score = r2_score(real_values, result)
+        except:
+            r2_score = None
+
+        try:
+            # Calculate the accuracy
+            accuracy = accuracy_score(real_values, result)
+        except:
+            accuracy = None
 
         # Calculate the precision
-        precision = precision_score(real_values, result)
+        try:
+            precision = precision_score(real_values, result)
+        except:
+            precision = None
 
         # Calculate the recall
-        recall = recall_score(real_values, result)
+        try:
+            recall = recall_score(real_values, result)
+        except:
+            recall = None
 
         # Calculate the F1 score
-        f1_score = f1_score(real_values, result)
+        try:
+            f1_score = f1_score(real_values, result)
+        except:
+            f1_score = None
 
-        # Print the scores
-        print("Accuracy:", accuracy)
-        print("Precision:", precision)
-        print("Recall:", recall)
-        print("F1 score:", f1_score)
+        errors_rel = real_values - result
+        error_rel_absolute = errors_rel.abs()
+        error_rel_mean = error_rel_absolute.mean()
+
+        # Print
+        return print(f'error relativo = {error_rel_mean / real_values.mean()}')
