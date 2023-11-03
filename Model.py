@@ -11,7 +11,7 @@ class Model(object):
         self.errores = []
         self.allw = []
 
-    def train(self, learningRate=0.001, iters=1000):
+    def train(self, learningRate=0.01, iters=1000, epsilon=0.01):
         '''
         Aplicacion del gradiente descendiente para el entrenamiento
         del modelo.
@@ -22,14 +22,23 @@ class Model(object):
         Y = self.df.loc[:,self.dep]
         X = self.df.loc[:,self.ind]
         X.insert(0, "termino_indep", [1.0]*len(X))
+        lr = learningRate
 
         W = [1.0 for i in X]
         
         for i in range(iters):
-            hw = np.dot(W, X.T)
-            err = Y - hw
-            self.errores.append(np.mean(abs(err)))
-            W = W + (learningRate * np.dot(X.T, err) * (2/len(X)))
-            self.w = W
+            hw = np.matmul(X,W)
+            E = Y - hw
 
+            self.errores.append(np.mean(abs(E)))
+            W = W + (lr * (np.matmul(X.T, E) * (2/len(X))))
+            
             self.allw.append(W)
+
+            err_it = np.max(abs(E))
+
+            if err_it <= epsilon:
+                print("EPSILON")
+                break
+
+        self.w = W
