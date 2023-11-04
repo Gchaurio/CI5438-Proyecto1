@@ -29,9 +29,10 @@ class Model(object):
         Aplicacion del gradiente descendiente para el entrenamiento
         del modelo.
         '''
-        if self.w:
+        if self.w: # El modelo ya fue entrenado, se retornan los pesos calculados en el entrenamiento
             return self.w
         
+        # 
         X, X_test, Y, Y_test = self.get_training_test(self.data)
 
         self.test_y = Y_test
@@ -39,16 +40,16 @@ class Model(object):
         
         X["t_ind"] = 1.0
 
-        W = np.array([1.0] * len(list(X.columns.values)))
+        W = np.array([0.5] * len(list(X.columns.values)))
 
         self.test_w = W
         
         for i in range(iters):
-            hw = np.matmul(X,W)
+            hw = np.dot(X,W)
             E = Y - hw
 
             self.errores.append(np.mean(abs(E)))
-            W = W + (learning_rate * (np.matmul(X.T, E) * (2/len(X))))
+            W = W + (learning_rate * (np.dot(X.T, E) * (2/len(X))))
             
             self.allw.append(W)
 
@@ -125,3 +126,5 @@ class Model(object):
 
         # Print
         return print(f'error relativo = {error_rel_mean / real_values.mean()}')
+
+    
