@@ -82,43 +82,7 @@ class Model(object):
         self.to_evaluate = to_evaluate
 
         self.results = result
-
-        # Calculate the MAE
-        mae = mean_absolute_error(real_values, result)
-
-        # Calculate the normalized MAE
-        normalized_mae = mae / np.mean(real_values)
-
-        # Calculate the R-squared
-        try:
-            r2_score = r2_score(real_values, result)
-        except:
-            r2_score = None
-
-        try:
-            # Calculate the accuracy
-            accuracy = accuracy_score(real_values, result)
-        except:
-            accuracy = None
-
-        # Calculate the precision
-        try:
-            precision = precision_score(real_values, result)
-        except:
-            precision = None
-
-        # Calculate the recall
-        try:
-            recall = recall_score(real_values, result)
-        except:
-            recall = None
-
-        # Calculate the F1 score
-        try:
-            f1_score = f1_score(real_values, result)
-        except:
-            f1_score = None
-
+        
         errors_rel = real_values - result
         error_rel_absolute = errors_rel.abs()
         error_rel_mean = error_rel_absolute.mean()
