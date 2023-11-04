@@ -3,6 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, mean_absolute_error
+import os
 
 class Model(object):
     
@@ -122,7 +123,7 @@ class Model(object):
         # Evaluacion
         self.evaluate(data)
 
-    def plot_error(self):
+    def plot_error(self, name="g1.png"):
         '''
         Grafico del error de cada iteracion
         '''
@@ -131,4 +132,6 @@ class Model(object):
         plt.xlabel("Iteraciones")
         plt.ylabel("Error")
         plt.plot(self.convergencia, self.errores[self.convergencia], c='red', marker='o')
-        return plt.plot(range(int(k)), self.errores[:int(k)])
+        plt.plot(range(int(k)), self.errores[:int(k)])
+        plt.savefig(os.path.join("graficos", name))
+        plt.show()
